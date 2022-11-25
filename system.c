@@ -255,23 +255,44 @@ void imprime()
 
 void apaga()
 {
-    /*
-    LISTA *aux=cabeca;
-    LISTA *aux2;
-
-    while(aux!= NULL && aux->aluno.codigo != cod )
+    if (cabeca->prox == NULL)
     {
-        aux2=aux;
-        aux=aux->prox;
-    }
-    if(aux != NULL)
-    {
-        aux2->prox = aux->prox;
-        free(aux);
+        printf("Lista vazia!");
+        getch();
+        return;
     }
 
+    system("cls");
+    printf("\t\t\t\t\tEXCLUIR CONSTELACAO\n");
+    printf("\t\t\t----------------------------------------------------\n\n");
+
+    int cod = 0;
+
+    do
+    {
+        printf("Digite o codigo de uma constelacao para exclui-la: ");
+        scanf("%d", &cod);
+    }
+    while (cod <= 0);
+
+    LISTA *atual = cabeca->prox, *anterior = cabeca;
+
+    //itera por toda a lista e troca o apontamento do elemento anterior ao que será excluido.
+    while(atual != NULL)
+    {
+        if (atual->constelacao.codigo == cod)
+        {
+            anterior->prox = atual->prox;
+            free(atual);
+            break;
+        }
+
+        anterior = atual;
+        atual = atual->prox;
+    }
+
+    printf(atual == NULL ? "Constelacao nao encontrada!" :"Constelacao excluida!");
     getch();
-    */
 }
 
 void altera()
@@ -344,7 +365,7 @@ void ordena(struct tipo_lista_encadeada *primeiroElem)
             atual = atual->prox;
         }
 
-        ordena(maior->prox);
+        ordena(maior->prox); //chama a função novamente para ordenar o resto da lista.
     }
     else
     {
