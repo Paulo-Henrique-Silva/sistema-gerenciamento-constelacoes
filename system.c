@@ -67,7 +67,7 @@ int main(void)
                 break;
 
             case 5:
-                ordena(cabeca);
+                ordena(cabeca->prox);
                 break;
 
             case 6:
@@ -104,9 +104,9 @@ int menu()
     printf("[1] - Inserir constelacao\n");
     printf("[2] - Ver constelacoes\n");
     printf("[3] - Excluir constelacoes\n");
-    printf("[4] - Atualizar constelacoes\n");
+    printf("[4] - Alterar constelacoes\n");
     printf("[5] - Ordernar constelacoes por codigo\n");
-    printf("[6] - Salvar constelacoes\n");
+    printf("[6] - Salvar constelacoes em arquivo\n");
     printf("[7] - Carregar constelacoes por arquivo\n");
     printf("[8] - Sair\n");
 
@@ -125,36 +125,61 @@ void insere()
     LISTA *novo = (LISTA *) malloc(sizeof(LISTA));
     novo->prox = cabeca->prox;
 
+    char buffer[1024];
+
+    int repetiu;
+
     do
     {
+        repetiu = 0;
+
         printf("Digite o codigo de identificacao: ");
         scanf("%d", &novo -> constelacao.codigo);
+
+        LISTA *atual = cabeca->prox;
+
+        while(atual != NULL) //itera para descobrir se repetiu o codigo
+        {
+            if (atual->constelacao.codigo == novo->constelacao.codigo)
+            {
+                repetiu = 1;
+                break;
+            }
+
+            atual = atual -> prox;
+        }
     }
-    while (novo -> constelacao.codigo <= 0);
+    while (novo -> constelacao.codigo <= 0 || repetiu);
 
     do
     {
         printf("Digite o nome em latim: ");
         fflush(stdin);
-        scanf("%s", &novo -> constelacao.nomeLatim);
+        scanf("%s", &buffer);
     }
-    while(strlen(novo -> constelacao.nomeLatim) > 29);
+    while(strlen(buffer) > 29);
+
+    strcpy(novo -> constelacao.nomeLatim, buffer);
 
     do
     {
         printf("Digite o apelido: ");
         fflush(stdin);
-        scanf("%s", &novo -> constelacao.apelido);
+        scanf("%s", &buffer);
     }
-    while(strlen(novo -> constelacao.apelido) > 29);
+    while(strlen(buffer) > 29);
+
+    strcpy(novo -> constelacao.apelido, buffer);
 
     do
     {
         printf("Digite a abreviacao: ");
         fflush(stdin);
-        scanf("%s", &novo -> constelacao.abreviacao);
+        scanf("%s", &buffer);
     }
-    while(strlen(novo -> constelacao.abreviacao) > 3);
+    while(strlen(buffer) > 3);
+
+    strcpy(novo -> constelacao.abreviacao, buffer);
 
     printf("Digite a quantidade de estrelas: ");
     scanf("%d", &novo -> constelacao.qtdEstrelas);
@@ -204,12 +229,20 @@ void carrega ()
 
     if (fp != NULL) //se o arquivo existe
     {
-        cabeca = (LISTA *) malloc(sizeof(LISTA));
-        cabeca->prox = NULL;
+        LISTA *atual = cabeca->prox;
+
+        // Percorre todos os nós da lista, liberando seus conteudos
+        while(atual != NULL)
+        {
+            LISTA *temp = atual;
+            free(atual);
+            atual = temp->prox;
+        }
     }
     else
     {
         printf("Nao foi possivel encontrar o arquivo!\n");
+        getch();
         return;
     }
 
@@ -291,85 +324,128 @@ void apaga()
         atual = atual->prox;
     }
 
-    printf(atual == NULL ? "Constelacao nao encontrada!" :"Constelacao excluida!");
+    printf(atual == NULL ? "Constelacao nao encontrada!" : "Constelacao excluida!");
     getch();
 }
 
 void altera()
 {
-    /*
-    LISTA *aux;
-    LISTA *aux2;
-    LISTA *novo;
-    char nome_novo[80];
-    float n_nt1,n_nt2,n_np1,n_np2;
-
-    aux = cabeca;
-    while(aux !=NULL)
+    if (cabeca->prox == NULL)
     {
-        if(aux -> aluno.codigo == cod)
-        {
-            printf("\nDigite o novo nome: ");
-            fflush(stdin);
-            fgets(nome_novo, 1024, stdin);
-            getchar();
-            strcpy(aux->aluno.nome,nome_novo);
-
-            printf("\nDigite a nova Nota Teorica 1: ");fflush(stdin);
-            scanf("%f",&n_nt1);
-            aux->aluno.nt1=n_nt1;
-            printf("\nDigite a nova Nota Pratica 1: ");fflush(stdin);
-            scanf("%f",&n_np1);
-            aux->aluno.np1=n_np1;
-            printf("\nDigite a nova Nota Teorica 2: ");fflush(stdin);
-            scanf("%f",&n_nt2);
-            aux->aluno.nt2=n_nt2;
-            printf("\nDigite a nova Nota Pratica 2: ");fflush(stdin);
-            scanf("%f",&n_np2);
-            aux->aluno.np2=n_np2;
-        }
-
-        aux = aux->prox;
+        printf("Lista vazia!");
+        getch();
+        return;
     }
 
+    system("cls");
+    printf("\t\t\t\t\tALTERAR CONSTELACAO\n");
+    printf("\t\t\t----------------------------------------------------\n\n");
+
+    int cod = 0;
+
+    do
+    {
+        printf("Digite o codigo de uma constelacao para altera-la: ");
+        scanf("%d", &cod);
+    }
+    while (cod <= 0);
+
+    LISTA *atual = cabeca->prox, *anterior = cabeca;
+
+    while(atual != NULL)
+    {
+        if (atual->constelacao.codigo == cod)
+        {
+            char buffer[1024];
+
+            do
+            {
+                printf("Digite o novo nome em latim: ");
+                fflush(stdin);
+                scanf("%s", &buffer);
+            }
+            while(strlen(buffer) > 29);
+
+            strcpy(atual -> constelacao.nomeLatim, buffer);
+
+            do
+            {
+                printf("Digite o novo apelido: ");
+                fflush(stdin);
+                scanf("%s", &buffer);
+            }
+            while(strlen(buffer) > 29);
+
+            strcpy(atual -> constelacao.apelido, buffer);
+
+            do
+            {
+                printf("Digite a nova abreviacao: ");
+                fflush(stdin);
+                scanf("%s", &buffer);
+            }
+            while(strlen(buffer) > 3);
+
+            strcpy(atual -> constelacao.abreviacao, buffer);
+
+            printf("Digite a nova quantidade de estrelas: ");
+            scanf("%d", &atual -> constelacao.qtdEstrelas);
+
+            printf("Digite a nova distancia em anos luz: ");
+            scanf("%f", &atual -> constelacao.distTerra);
+
+            break;
+        }
+
+        anterior = atual;
+        atual = atual->prox;
+    }
+
+    printf(atual == NULL ? "Constelacao nao encontrada!" : "Constelacao alterada!");
     getch();
-    */
 }
 
+//ordena a lista por bubble sort
 void ordena(struct tipo_lista_encadeada *primeiroElem)
 {
-    if (primeiroElem->prox != NULL && primeiroElem->prox->prox != NULL)
+    int foiTrocado;
+    LISTA *atual;
+    LISTA *anterior = NULL;
+
+    /* se não estiver vazia*/
+    if (primeiroElem == NULL)
     {
-        LISTA *atual, *maior, *anterior;
+        printf("Lista vazia!");
+        return;
+    }
 
-        atual = primeiroElem->prox;
-        maior = primeiroElem->prox;
-        anterior = NULL;
+    do
+    {
+        foiTrocado = 0;
+        atual = primeiroElem;
 
-        while(atual != NULL)
+        while (atual->prox != anterior)
         {
-            if (atual->constelacao.codigo > maior->constelacao.codigo)
+            if (atual->constelacao.codigo > atual->prox->constelacao.codigo)
             {
-                /*Troca o maior valor registrado*/
-                maior = atual;
-                anterior->prox = atual->prox;
-
-                /*Define o maior como primeiro elemento*/
-                maior->prox = primeiroElem->prox;
-                primeiroElem->prox = maior;
-
-                //atual = maior;
+                troca(atual, atual->prox);
+                foiTrocado = 1;
             }
 
-            anterior = atual;
             atual = atual->prox;
         }
 
-        ordena(maior->prox); //chama a função novamente para ordenar o resto da lista.
+        anterior = atual;
     }
-    else
-    {
-        printf("Lista ordenada!");
-        getch();
-    }
+    while (foiTrocado);
+
+    printf("Lista ordenada!");
+    getch();
+}
+
+void troca(LISTA *a, LISTA *b)
+{
+    struct constelacao temp = a->constelacao;
+    a->constelacao = b->constelacao;
+    b->constelacao = temp;
 }
