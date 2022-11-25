@@ -79,7 +79,6 @@ int main(void)
                 break;
 
             case 8:
-                printf("\n");
                 exit(0);
                 break;
 
@@ -102,10 +101,10 @@ int menu()
     printf("\t\t\t---------------------------------------------------------\n\n\n");
 
     printf("[1] - Inserir constelacao\n");
-    printf("[2] - Ver constelacoes cadastradas\n");
+    printf("[2] - Ver constelacoes\n");
     printf("[3] - Excluir constelacoes\n");
     printf("[4] - Atualizar constelacoes\n");
-    printf("[5] - Ordernar constelacoes\n");
+    printf("[5] - Ordernar constelacoes por codigo\n");
     printf("[6] - Salvar constelacoes\n");
     printf("[7] - Carregar constelacoes por arquivo\n");
     printf("[8] - Sair\n");
@@ -187,42 +186,42 @@ void salva(struct tipo_lista_encadeada *lista_constelacoes)
 
     fclose (fp);
 
-    printf("Lista salva!\n");
+    printf("Lista salva em arquivo!\n");
     getch();
 }
 
 void carrega (struct tipo_lista_encadeada *lista_constelacoes)
 {
-    /*
     FILE *fp;
-    LISTA *aux,*novo;
-    inicia_lista();
+    LISTA *aux, *novo;
 
-    fp = fopen("cad_alunos.txt","r");
+    fp = fopen("constelacoes.txt", "r");
 
-    while(!feof(fp))
+    if (fp != NULL) //se o arquivo existe
     {
-        novo = (LISTA *)malloc(1 * sizeof(LISTA));
-        fread(&novo -> aluno, sizeof(CONSTELACAO), 1, fp);
-        novo -> prox = NULL;
+        primeiro = (LISTA *) malloc(sizeof(LISTA));
+        primeiro->prox = NULL;
+    }
+    else
+    {
+        printf("Nao foi possivel encontrar o arquivo!\n");
+        return;
+    }
 
-        if(primeiro == NULL)
-        {
-            primeiro = novo;
-            ultimo = primeiro;
-        }
-        else
-        {
-            ultimo -> prox = novo;
-            ultimo = novo;
-        }
+    while(!feof(fp)) //enquanto nao chega ao final do arquivo
+    {
+        novo = (LISTA *) malloc(sizeof(LISTA));
+        novo->prox = primeiro->prox;
 
-        novo -> aluno.media=((novo -> aluno.nt1*0.7+novo -> aluno.np1*0.3)+(novo -> aluno.nt2*0.7+novo -> aluno.np2*0.3))/2.0;
+        fscanf(fp, "%d %s %s %s %d %f\n", &novo->constelacao.codigo, &novo->constelacao.nomeLatim, &novo->constelacao.apelido, &novo->constelacao.abreviacao, &novo->constelacao.qtdEstrelas, &novo->constelacao.distTerra);
+        printf("%d %s %s %s %d %.2f\n", novo->constelacao.codigo, novo->constelacao.nomeLatim, novo->constelacao.apelido, novo->constelacao.abreviacao, novo->constelacao.qtdEstrelas, novo->constelacao.distTerra);
+
+        primeiro->prox = novo;
     }
 
     fclose(fp);
-    */
 
+    printf("Lista carregada!\n");
     getch();
 }
 
@@ -309,14 +308,13 @@ void altera(struct tipo_lista_encadeada *lista_constelacoes)
 void ordena(struct tipo_lista_encadeada *lista_constelacoes)
 {
     /*
-    LISTA *aux,*aux2;
+    LISTA *aux, *aux2;
 
     aux = primeiro;
-    for(aux=primeiro;aux!=NULL;aux=aux->prox)
+
+    for(aux = primeiro; aux != NULL; aux = aux->prox)
     {
         aux2=(LISTA *)malloc(1*sizeof(LISTA));
-
-        //if(strcmp(aux->aluno.nome,aux->prox->aluno.nome)>0)
 
         if(aux -> aluno.codigo > aux -> prox -> aluno.codigo)
         {
@@ -327,8 +325,8 @@ void ordena(struct tipo_lista_encadeada *lista_constelacoes)
 
         free(aux2);
     }
-
-    getch();
     */
-}
 
+    printf("Lista ordenada!");
+    getch();
+}
