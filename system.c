@@ -231,7 +231,7 @@ void carrega ()
     {
         LISTA *atual = cabeca->prox;
 
-        // Percorre todos os nós da lista, liberando seus conteudos
+        // Itera por todos os nós da lista, liberando seus conteudos
         while(atual != NULL)
         {
             LISTA *temp = atual;
