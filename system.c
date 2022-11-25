@@ -22,26 +22,26 @@ struct tipo_lista_encadeada
 typedef struct tipo_lista_encadeada LISTA;
 typedef struct constelacao CONSTELACAO;
 
-LISTA *primeiro;
+LISTA *cabeca; //indica a "cabeça" da lista, ou seja, o nó vazio que aponta para o primeiro elemento.
 
 int menu ();
 void inicia_lista();
 
-void imprime(struct tipo_lista_encadeada *lista_constelacoes);
-void insere(struct tipo_lista_encadeada *lista_constelacoes);
-void apaga(struct tipo_lista_encadeada *lista_constelacoes);
-void altera(struct tipo_lista_encadeada *lista_constelacoes);
-void ordena(struct tipo_lista_encadeada *lista_constelacoes);
-void salva (struct tipo_lista_encadeada *lista_constelacoes);
-void carrega(struct tipo_lista_encadeada *lista_constelacoes);
+void imprime();
+void insere();
+void apaga();
+void altera();
+void ordena(struct tipo_lista_encadeada *primeiroElem);
+void salva ();
+void carrega();
 
 int main(void)
 {
     int escolha;
     struct tipo_lista_encadeada *lista_constelacoes = (struct tipo_lista_encadeada*) malloc(sizeof(struct tipo_lista_encadeada*));;
 
-    primeiro = (LISTA *) malloc(sizeof(LISTA));
-    primeiro->prox = NULL;
+    cabeca = (LISTA *) malloc(sizeof(LISTA));
+    cabeca->prox = NULL;
     //indica que a lista está vazia.
 
     for ( ;; )
@@ -67,7 +67,7 @@ int main(void)
                 break;
 
             case 5:
-                ordena(lista_constelacoes);
+                ordena(cabeca);
                 break;
 
             case 6:
@@ -83,7 +83,8 @@ int main(void)
                 break;
 
             default:
-                printf( "Opcao invalida. \n" );
+                printf("Opcao invalida!");
+                getch();
                 break;
         }
     }
@@ -115,17 +116,21 @@ int menu()
     return opcao;
 }
 
-void insere(struct tipo_lista_encadeada *lista_constelacoes)
+void insere()
 {
     system("cls");
     printf("\t\t\t\t\tINSERIR CONSTELACAO\n");
     printf("\t\t\t----------------------------------------------------\n\n\n");
 
     LISTA *novo = (LISTA *) malloc(sizeof(LISTA));
-    novo->prox = primeiro->prox;
+    novo->prox = cabeca->prox;
 
-    printf("Digite o codigo de identificacao: ");
-    scanf("%d", &novo -> constelacao.codigo);
+    do
+    {
+        printf("Digite o codigo de identificacao: ");
+        scanf("%d", &novo -> constelacao.codigo);
+    }
+    while (novo -> constelacao.codigo <= 0);
 
     do
     {
@@ -157,13 +162,13 @@ void insere(struct tipo_lista_encadeada *lista_constelacoes)
     printf("Digite a distancia em anos luz: ");
     scanf("%f", &novo -> constelacao.distTerra);
 
-    primeiro->prox = novo;
+    cabeca->prox = novo;
 
     printf("\nConstelacao inserida com sucesso!\n");
     getch();
 }
 
-void salva(struct tipo_lista_encadeada *lista_constelacoes)
+void salva()
 {
     FILE *fp;
     LISTA *atual;
@@ -176,7 +181,7 @@ void salva(struct tipo_lista_encadeada *lista_constelacoes)
         return;
     }
 
-    atual = primeiro->prox;
+    atual = cabeca->prox;
 
     while(atual != NULL)
     {
@@ -190,7 +195,7 @@ void salva(struct tipo_lista_encadeada *lista_constelacoes)
     getch();
 }
 
-void carrega (struct tipo_lista_encadeada *lista_constelacoes)
+void carrega ()
 {
     FILE *fp;
     LISTA *aux, *novo;
@@ -199,8 +204,8 @@ void carrega (struct tipo_lista_encadeada *lista_constelacoes)
 
     if (fp != NULL) //se o arquivo existe
     {
-        primeiro = (LISTA *) malloc(sizeof(LISTA));
-        primeiro->prox = NULL;
+        cabeca = (LISTA *) malloc(sizeof(LISTA));
+        cabeca->prox = NULL;
     }
     else
     {
@@ -211,11 +216,11 @@ void carrega (struct tipo_lista_encadeada *lista_constelacoes)
     while(!feof(fp)) //enquanto nao chega ao final do arquivo
     {
         novo = (LISTA *) malloc(sizeof(LISTA));
-        novo->prox = primeiro->prox;
+        novo->prox = cabeca->prox;
 
         fscanf(fp, "%d %s %s %s %d %f\n", &novo->constelacao.codigo, &novo->constelacao.nomeLatim, &novo->constelacao.apelido, &novo->constelacao.abreviacao, &novo->constelacao.qtdEstrelas, &novo->constelacao.distTerra);
 
-        primeiro->prox = novo;
+        cabeca->prox = novo;
     }
 
     fclose(fp);
@@ -224,28 +229,34 @@ void carrega (struct tipo_lista_encadeada *lista_constelacoes)
     getch();
 }
 
-void imprime(struct tipo_lista_encadeada *lista_constelacoes)
+void imprime()
 {
     system("cls");
     printf("\t\t\t\t\t\tCONSTELACOES\n");
-    printf("\t\t\t---------------------------------------------------------\n\n\n");
+    printf("\t\t\t---------------------------------------------------------\n\n");
 
-    LISTA *atual = primeiro->prox;
+    LISTA *atual = cabeca->prox;
+    int qtdElementos = 0;
 
     // Percorre todos os nós da lista, imprimindo o conteúdo de cada um.
     while(atual != NULL)
     {
-        printf("%d %s %s %s %d %.2f\n", atual->constelacao.codigo, atual->constelacao.nomeLatim, atual->constelacao.apelido, atual->constelacao.abreviacao, atual->constelacao.qtdEstrelas, atual->constelacao.distTerra);
+        printf("\tCODIGO: %d - NOME: %s - APELIDO: %s - ABREVIACAO: %s - QUANTIDADE DE ESTRELAS: %d - DISTANCIA DA TERRA: %.2f\n\n", atual->constelacao.codigo, atual->constelacao.nomeLatim, atual->constelacao.apelido, atual->constelacao.abreviacao, atual->constelacao.qtdEstrelas, atual->constelacao.distTerra);
+
         atual = atual->prox;
+        qtdElementos++;
     }
+
+    if (qtdElementos == 0)
+        printf("A lista esta vazia! :/");
 
     getch();
 }
 
-void apaga(struct tipo_lista_encadeada *lista_constelacoes)
+void apaga()
 {
     /*
-    LISTA *aux=primeiro;
+    LISTA *aux=cabeca;
     LISTA *aux2;
 
     while(aux!= NULL && aux->aluno.codigo != cod )
@@ -263,7 +274,7 @@ void apaga(struct tipo_lista_encadeada *lista_constelacoes)
     */
 }
 
-void altera(struct tipo_lista_encadeada *lista_constelacoes)
+void altera()
 {
     /*
     LISTA *aux;
@@ -272,7 +283,7 @@ void altera(struct tipo_lista_encadeada *lista_constelacoes)
     char nome_novo[80];
     float n_nt1,n_nt2,n_np1,n_np2;
 
-    aux = primeiro;
+    aux = cabeca;
     while(aux !=NULL)
     {
         if(aux -> aluno.codigo == cod)
@@ -304,30 +315,40 @@ void altera(struct tipo_lista_encadeada *lista_constelacoes)
     */
 }
 
-void ordena(struct tipo_lista_encadeada *lista_constelacoes)
+void ordena(struct tipo_lista_encadeada *primeiroElem)
 {
-    /*
-    LISTA *aux, *aux2;
-
-    aux = primeiro;
-
-    while(aux != NULL)
+    if (primeiroElem->prox != NULL && primeiroElem->prox->prox != NULL)
     {
-        aux2 = (LISTA *)malloc(sizeof(LISTA));
+        LISTA *atual, *maior, *anterior;
 
-        if(aux->constelacao.codigo > aux->prox->constelacao.codigo)
+        atual = primeiroElem->prox;
+        maior = primeiroElem->prox;
+        anterior = NULL;
+
+        while(atual != NULL)
         {
-            aux2->constelacao = aux->constelacao;
-            aux->constelacao = aux->prox->constelacao;
-            aux->prox->constelacao = aux2->constelacao;
+            if (atual->constelacao.codigo > maior->constelacao.codigo)
+            {
+                /*Troca o maior valor registrado*/
+                maior = atual;
+                anterior->prox = atual->prox;
+
+                /*Define o maior como primeiro elemento*/
+                maior->prox = primeiroElem->prox;
+                primeiroElem->prox = maior;
+
+                //atual = maior;
+            }
+
+            anterior = atual;
+            atual = atual->prox;
         }
 
-        free(aux2);
-
-        aux = aux->prox;
+        ordena(maior->prox);
     }
-    */
-
-    printf("Lista ordenada!");
-    getch();
+    else
+    {
+        printf("Lista ordenada!");
+        getch();
+    }
 }
