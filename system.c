@@ -214,7 +214,6 @@ void carrega (struct tipo_lista_encadeada *lista_constelacoes)
         novo->prox = primeiro->prox;
 
         fscanf(fp, "%d %s %s %s %d %f\n", &novo->constelacao.codigo, &novo->constelacao.nomeLatim, &novo->constelacao.apelido, &novo->constelacao.abreviacao, &novo->constelacao.qtdEstrelas, &novo->constelacao.distTerra);
-        printf("%d %s %s %s %d %.2f\n", novo->constelacao.codigo, novo->constelacao.nomeLatim, novo->constelacao.apelido, novo->constelacao.abreviacao, novo->constelacao.qtdEstrelas, novo->constelacao.distTerra);
 
         primeiro->prox = novo;
     }
@@ -236,7 +235,7 @@ void imprime(struct tipo_lista_encadeada *lista_constelacoes)
     // Percorre todos os nós da lista, imprimindo o conteúdo de cada um.
     while(atual != NULL)
     {
-        printf("%s \n", atual->constelacao.apelido);
+        printf("%d %s %s %s %d %.2f\n", atual->constelacao.codigo, atual->constelacao.nomeLatim, atual->constelacao.apelido, atual->constelacao.abreviacao, atual->constelacao.qtdEstrelas, atual->constelacao.distTerra);
         atual = atual->prox;
     }
 
@@ -312,18 +311,20 @@ void ordena(struct tipo_lista_encadeada *lista_constelacoes)
 
     aux = primeiro;
 
-    for(aux = primeiro; aux != NULL; aux = aux->prox)
+    while(aux != NULL)
     {
-        aux2=(LISTA *)malloc(1*sizeof(LISTA));
+        aux2 = (LISTA *)malloc(sizeof(LISTA));
 
-        if(aux -> aluno.codigo > aux -> prox -> aluno.codigo)
+        if(aux->constelacao.codigo > aux->prox->constelacao.codigo)
         {
-            aux2->aluno = aux->aluno;
-            aux->aluno = aux->prox->aluno;
-            aux->prox->aluno = aux2->aluno;
+            aux2->constelacao = aux->constelacao;
+            aux->constelacao = aux->prox->constelacao;
+            aux->prox->constelacao = aux2->constelacao;
         }
 
         free(aux2);
+
+        aux = aux->prox;
     }
     */
 
