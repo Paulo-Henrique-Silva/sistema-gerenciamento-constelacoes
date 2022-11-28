@@ -24,16 +24,15 @@ typedef struct constelacao CONSTELACAO;
 
 LISTA *cabeca; //indica a "cabeça" da lista, ou seja, o nó vazio que aponta para o primeiro elemento.
 
-int menu ();
-void inicia_lista();
+int menu (void);
 
-void imprime();
-void insere();
-void apaga();
-void altera();
+void imprime(void);
+void insere(void);
+void apaga(void);
+void altera(void);
 void ordena(struct tipo_lista_encadeada *primeiroElem);
-void salva ();
-void carrega();
+void salva (void);
+void carrega(void);
 
 int main(void)
 {
@@ -51,19 +50,19 @@ int main(void)
         switch (escolha)
         {
             case 1:
-                insere(lista_constelacoes);
+                insere();
                 break;
 
             case 2:
-                imprime(lista_constelacoes);
+                imprime();
                 break;
 
             case 3:
-                apaga(lista_constelacoes);
+                apaga();
                 break;
 
             case 4:
-                altera(lista_constelacoes);
+                altera();
                 break;
 
             case 5:
@@ -71,11 +70,11 @@ int main(void)
                 break;
 
             case 6:
-                salva(lista_constelacoes);
+                salva();
                 break;
 
             case 7:
-                carrega(lista_constelacoes);
+                carrega();
                 break;
 
             case 8:
@@ -92,7 +91,7 @@ int main(void)
     getch();
 }
 
-int menu()
+int menu(void)
 {
     system("cls");
 
@@ -116,7 +115,7 @@ int menu()
     return opcao;
 }
 
-void insere()
+void insere(void)
 {
     system("cls");
     printf("\t\t\t\t\tINSERIR CONSTELACAO\n");
@@ -193,7 +192,7 @@ void insere()
     getch();
 }
 
-void salva()
+void salva(void)
 {
     FILE *fp;
     LISTA *atual;
@@ -220,7 +219,7 @@ void salva()
     getch();
 }
 
-void carrega ()
+void carrega(void)
 {
     FILE *fp;
     LISTA *aux, *novo;
@@ -262,7 +261,7 @@ void carrega ()
     getch();
 }
 
-void imprime()
+void imprime(void)
 {
     system("cls");
     printf("\t\t\t\t\t\tCONSTELACOES\n");
@@ -286,7 +285,7 @@ void imprime()
     getch();
 }
 
-void apaga()
+void apaga(void)
 {
     if (cabeca->prox == NULL)
     {
@@ -328,7 +327,7 @@ void apaga()
     getch();
 }
 
-void altera()
+void altera(void)
 {
     if (cabeca->prox == NULL)
     {
